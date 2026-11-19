@@ -368,7 +368,8 @@
 
   // Turns a goal typed however it came to mind into present-tense phrasing
   // ("Run a marathon" / "I will run a marathon" -> "I run a marathon") for display.
-  function toPresentTense(raw){
+  // Used as an instant placeholder while the AI rewrite (below) is in flight.
+  function toPresentTenseLocal(raw){
     var text = (raw || "").trim();
     if(!text) return text;
 
@@ -402,6 +403,42 @@
     }
 
     return "I " + lowerFirst(text);
+  }
+
+  // AI-backed present tense: caches per raw goal text for the session so each
+  // goal is only sent to the API once, no matter how many times it's rendered.
+  var presentTenseCache = {};
+  var presentTensePromises = {};
+
+  function fetchPresentTense(raw){
+    if(presentTenseCache[raw]) return Promise.resolve(presentTenseCache[raw]);
+    if(presentTensePromises[raw]) return presentTensePromises[raw];
+    var p = fetch("/api/present-tense", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({text: raw})
+    }).then(function(r){ return r.json(); }).then(function(data){
+      var result = (data && data.result) ? data.result : toPresentTenseLocal(raw);
+      presentTenseCache[raw] = result;
+      return result;
+    }).catch(function(){
+      var result = toPresentTenseLocal(raw);
+      presentTenseCache[raw] = result;
+      return result;
+    });
+    presentTensePromises[raw] = p;
+    return p;
+  }
+
+  // Sets el's text to an instant local guess, then swaps in the AI rewrite
+  // in place once it resolves (no full re-render, so focus/scroll isn't lost).
+  function setPresentTenseText(el, raw){
+    if(!raw){ el.textContent = raw; return; }
+    if(presentTenseCache[raw]){ el.textContent = presentTenseCache[raw]; return; }
+    el.textContent = toPresentTenseLocal(raw);
+    fetchPresentTense(raw).then(function(result){
+      el.textContent = result;
+    });
   }
 
   function loadState(){
@@ -548,11 +585,13 @@
     var wrap = el("div", {class:"goal-list"});
     state.goals.forEach(function(g, idx){
       var selected = opts.selectable && state.selectedIndex === idx;
+      var txtEl = el("div", {class:"txt"});
+      setPresentTenseText(txtEl, g);
       var row = el("div", {
         class: "goal-row " + (opts.selectable ? "selectable" : "static") + (selected ? " selected" : "")
       }, [
         el("div", {class:"num", text: (idx+1)}),
-        el("div", {class:"txt", text: toPresentTense(g)})
+        txtEl
       ]);
       if(opts.selectable){
         row.addEventListener("click", function(){
@@ -612,7 +651,9 @@
       }
     }));
     s.appendChild(progressBar(i/7));
-    s.appendChild(el("div", {class:"goal-reminder", html: "🎯 <b>" + escapeHtml(toPresentTense(state.goals[state.selectedIndex])) + "</b>"}));
+    var reminderTextEl = el("b", {});
+    setPresentTenseText(reminderTextEl, state.goals[state.selectedIndex]);
+    s.appendChild(el("div", {class:"goal-reminder"}, [document.createTextNode("🎯 "), reminderTextEl]));
     s.appendChild(el("div", {class:"step-chip", text: "STEP " + (i+1) + " OF 7"}));
     s.appendChild(el("h2", {text: def.title}));
     s.appendChild(el("p", {class:"lead", text: def.body}));
@@ -647,12 +688,6 @@
     return s;
   }
 
-  function escapeHtml(str){
-    var d = document.createElement("div");
-    d.textContent = str;
-    return d.innerHTML;
-  }
-
   function screenSummary(){
     var s = el("div", {class:"screen"});
     s.appendChild(topBar({ onBack: function(){ state.stepIndex = 6; go("steps"); } }));
@@ -660,9 +695,11 @@
     s.appendChild(el("h2", {text:"Your plan"}));
     s.appendChild(el("p", {class:"lead", text:"Screenshot this, or come back any time — it's saved on this device."}));
 
+    var summaryTxtEl = el("div", {class:"txt"});
+    setPresentTenseText(summaryTxtEl, state.goals[state.selectedIndex]);
     s.appendChild(el("div", {class:"summary-goal"}, [
       el("div", {class:"label", text:"The goal with the biggest impact"}),
-      el("div", {class:"txt", text: toPresentTense(state.goals[state.selectedIndex])})
+      summaryTxtEl
     ]));
 
     STEP_DEFS.forEach(function(def, idx){
