@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>Goal Focus — 10 to 1</title>
+<meta name="description" content="Write 10 goals, pick the one that matters most, then work through Brian Tracy's 7-step plan to move it.">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-180.png">
+<meta property="og:title" content="Goal Focus — 10 to 1">
+<meta property="og:description" content="10 goals. 1 focus. 7 steps. Based on Brian Tracy's goal-setting method.">
+<meta property="og:image" content="assets/icon-512.png">
+<style>
+  :root{
+    --bg:#0f172a;
+    --card:#17203a;
+    --card-2:#1d2745;
+    --ink:#f4f6fb;
+    --ink-dim:#9aa5c0;
+    --accent:#5b8cff;
+    --accent-ink:#0b1430;
+    --good:#34d399;
+    --line:rgba(255,255,255,0.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+  }
+  .screen{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    animation: fade .25s ease;
+  }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+    min-height:28px;
+  }
+  .brand{
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .brand img{
+    width:22px;
+    height:22px;
+    border-radius:6px;
+    display:block;
+  }
+  .hero-img{
+    width:100%;
+    max-width:260px;
+    margin:0 auto 18px;
+    display:block;
+    border-radius:20px;
+  }
+  .progress-pill{
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent);
+    background:rgba(91,140,255,0.12);
+    border-radius:999px;
+    padding:6px 12px;
+  }
+  .back-btn{
+    background:none;border:none;color:var(--ink-dim);
+    font-size:15px;font-weight:600;padding:8px 4px;
+    cursor:pointer;
+  }
+
+  .progress-bar{
+    height:6px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .progress-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), #8f6bff);
+    border-radius:999px;
+    transition:width .3s ease;
+  }
+
+  h1{
+    font-size:26px;
+    line-height:1.25;
+    margin:0 0 10px;
+    font-weight:800;
+  }
+  h2{
+    font-size:21px;
+    line-height:1.3;
+    margin:0 0 8px;
+    font-weight:800;
+  }
+  p.lead{
+    color:var(--ink-dim);
+    font-size:15.5px;
+    line-height:1.5;
+    margin:0 0 20px;
+  }
+  .hint-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:18px;
+    font-size:14.5px;
+    color:var(--ink-dim);
+    line-height:1.5;
+  }
+  .hint-box b{ color:var(--ink); }
+  .hint-example{
+    display:inline-block;
+    margin-top:6px;
+    color:var(--good);
+    font-style:italic;
+  }
+
+  textarea, input[type=text]{
+    width:100%;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    color:var(--ink);
+    font-size:17px;
+    padding:16px;
+    font-family:inherit;
+    resize:none;
+    line-height:1.45;
+    transition:border-color .15s ease;
+  }
+  textarea:focus, input[type=text]:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+  textarea{ min-height:120px; }
+
+  .spacer{ flex:1; }
+
+  .btn{
+    display:block;
+    width:100%;
+    border:none;
+    border-radius:16px;
+    padding:17px 20px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    margin-top:12px;
+    transition:transform .08s ease, opacity .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{
+    background:var(--accent);
+    color:var(--accent-ink);
+  }
+  .btn-primary:disabled{
+    opacity:0.35;
+    cursor:not-allowed;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-dim);
+    border:1.5px solid var(--line);
+  }
+  .btn-good{
+    background:var(--good);
+    color:#06281c;
+  }
+
+  .goal-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:10px;
+    overflow-y:auto;
+  }
+  .goal-row{
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:15.5px;
+    line-height:1.4;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .goal-row .num{
+    flex:0 0 auto;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    color:var(--ink-dim);
+    font-size:13px;
+    font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .goal-row .txt{ flex:1; padding-top:2px; }
+  .goal-row.selectable:active{ background:var(--card-2); }
+  .goal-row.selected{
+    border-color:var(--good);
+    background:rgba(52,211,153,0.08);
+  }
+  .goal-row.selected .num{
+    background:var(--good);
+    color:#06281c;
+  }
+  .goal-row.static{ cursor:default; }
+
+  .step-chip{
+    display:inline-block;
+    font-size:12.5px;
+    font-weight:800;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--accent);
+    background:rgba(91,140,255,0.12);
+    border-radius:999px;
+    padding:5px 11px;
+    margin-bottom:12px;
+  }
+  .goal-reminder{
+    background:var(--card-2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:14px;
+    color:var(--ink-dim);
+    margin-bottom:18px;
+  }
+  .goal-reminder b{ color:var(--ink); font-weight:700; }
+
+  .summary-block{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .summary-block .label{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .summary-block .ans{
+    font-size:15.5px;
+    line-height:1.5;
+    color:var(--ink);
+    white-space:pre-wrap;
+  }
+  .summary-goal{
+    background:linear-gradient(135deg, rgba(91,140,255,0.18), rgba(143,107,255,0.1));
+    border:1px solid rgba(91,140,255,0.35);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:18px;
+  }
+  .summary-goal .label{
+    font-size:12px;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:8px;
+  }
+  .summary-goal .txt{ font-size:19px; font-weight:700; line-height:1.4; }
+
+  .footnote{
+    text-align:center;
+    color:var(--ink-dim);
+    font-size:12.5px;
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "goalFocusState_v1";
+
+  var STEP_DEFS = [
+    {
+      title: "1. Define it",
+      body: "Write this goal in specific, measurable detail. Not “get fit” — “run 5km in under 28 minutes by March.” The clearer it is, the more real it becomes.",
+      placeholder: "Describe exactly what achieving this goal looks like…"
+    },
+    {
+      title: "2. Set a deadline",
+      body: "Give it a target date. If it's a big goal, break it into smaller sub-deadlines along the way — a deadline turns a wish into a commitment.",
+      placeholder: "Target date, and any sub-deadlines along the way…"
+    },
+    {
+      title: "3. List every action",
+      body: "Brainstorm everything it would take to get there. Don't filter or judge yet — just list every action, resource, or skill involved.",
+      placeholder: "List everything you can think of that this will take…"
+    },
+    {
+      title: "4. Turn it into a plan",
+      body: "Take that list and sequence it by priority. What has to happen first? What depends on what? Turn the list into an order.",
+      placeholder: "Put your actions in order — what comes first, second, third…"
+    },
+    {
+      title: "5. Find the main obstacle",
+      body: "Of everything standing between you and this goal, what is the ONE constraint actually holding you back? Name it precisely — that's what you attack first.",
+      placeholder: "What's the one real obstacle in your way?"
+    },
+    {
+      title: "6. Start now",
+      body: "Momentum beats planning. Commit to one small action you will take immediately after finishing this — today, not “soon.”",
+      placeholder: "The one small action you'll take right away…"
+    },
+    {
+      title: "7. Do something daily",
+      body: "Pick one action you will take every single day toward this goal, no exceptions. Small and daily beats big and occasional.",
+      placeholder: "The one thing you'll do every day, without exception…"
+    }
+  ];
+
+  var PRESENT_TENSE_EXAMPLES = [
+    "I earn $150,000 a year",
+    "I weigh 75kg and feel strong",
+    "I run a 10km race in under 50 minutes",
+    "I lead a team of 10 people",
+    "I speak confidently in front of clients",
+    "I have $20,000 in savings",
+    "I read 20 books this year",
+    "I spend 2 hours of quality time with family every day",
+    "I run a profitable side business",
+    "I live in a home I love"
+  ];
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return {
+      screen: "welcome",
+      goals: ["","","","","","","","","",""],
+      goalIndex: 0,
+      selectedIndex: null,
+      stepAnswers: ["","","","","","",""],
+      stepIndex: 0
+    };
+  }
+
+  var state = loadState();
+
+  function save(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  function go(screen){
+    state.screen = screen;
+    save();
+    render();
+  }
+
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    attrs = attrs || {};
+    for(var k in attrs){
+      if(k === "class") e.className = attrs[k];
+      else if(k === "html") e.innerHTML = attrs[k];
+      else if(k === "text") e.textContent = attrs[k];
+      else if(k.indexOf("on") === 0) e.addEventListener(k.slice(2), attrs[k]);
+      else if(typeof attrs[k] === "boolean") e[k] = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(function(c){ if(c) e.appendChild(c); });
+    return e;
+  }
+
+  function topBar(opts){
+    opts = opts || {};
+    var left;
+    if(opts.onBack){
+      left = el("button", {class:"back-btn", text:"‹ Back", onclick: opts.onBack});
+    } else {
+      left = el("div", {class:"brand"}, [
+        el("img", {src:"assets/icon-192.png", alt:""}),
+        el("span", {text:"GOAL FOCUS"})
+      ]);
+    }
+    var right = opts.pill ? el("div", {class:"progress-pill", text: opts.pill}) : el("div");
+    return el("div", {class:"top"}, [left, right]);
+  }
+
+  function progressBar(fraction){
+    return el("div", {class:"progress-bar"}, [
+      el("div", {class:"progress-bar-fill", style:"width:" + Math.round(fraction*100) + "%"})
+    ]);
+  }
+
+  function screenWelcome(){
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar());
+    s.appendChild(el("div", {class:"spacer"}));
+    s.appendChild(el("img", {class:"hero-img", src:"assets/hero.webp", alt:"Ten paths leading to one highlighted goal"}));
+    s.appendChild(el("h1", {text:"10 goals. 1 focus. 7 steps."}));
+    s.appendChild(el("p", {class:"lead", text:"Based on Brian Tracy's goal-setting method. You'll write 10 goals for the next 12 months, pick the one that matters most right now, then work through a 7-step plan to actually move it."}));
+    s.appendChild(el("button", {class:"btn btn-primary", text:"Start", onclick: function(){
+      go("goal-entry");
+    }}));
+    if(hasAnyProgress()){
+      s.appendChild(el("button", {class:"btn btn-ghost", text:"Start over", onclick: function(){
+        if(confirm("Clear everything and start from scratch?")){
+          localStorage.removeItem(STORAGE_KEY);
+          state = loadState();
+          render();
+        }
+      }}));
+    }
+    s.appendChild(el("div", {class:"footnote", text:"Your answers stay on this device."}));
+    return s;
+  }
+
+  function hasAnyProgress(){
+    return state.goals.some(function(g){ return g.trim().length > 0; }) ||
+      state.stepAnswers.some(function(a){ return a.trim().length > 0; });
+  }
+
+  function screenGoalEntry(){
+    var i = state.goalIndex;
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar({
+      pill: (i+1) + " of 10",
+      onBack: function(){
+        if(i === 0){ go("welcome"); }
+        else { state.goalIndex = i - 1; save(); render(); }
+      }
+    }));
+    s.appendChild(progressBar((i) / 10));
+    s.appendChild(el("h2", {text: "What's goal #" + (i+1) + "?"}));
+    s.appendChild(el("p", {class:"lead", text:"Write it in the present tense, as if it's already true."}));
+
+    var example = PRESENT_TENSE_EXAMPLES[i % PRESENT_TENSE_EXAMPLES.length];
+    s.appendChild(el("div", {class:"hint-box"}, [
+      el("span", {html:"<b>Tip:</b> use “I am…” or “I have…”, not “I will…”"}),
+      el("div", {class:"hint-example", text: "e.g. “" + example + "”"})
+    ]));
+
+    var ta = el("textarea", {
+      placeholder: "I…",
+      autofocus: "true"
+    });
+    ta.value = state.goals[i] || "";
+
+    var nextBtn = el("button", {class:"btn btn-primary", text: i === 9 ? "Review all 10" : "Next"});
+    function updateBtn(){ nextBtn.disabled = ta.value.trim().length === 0; }
+    ta.addEventListener("input", function(){
+      state.goals[i] = ta.value;
+      save();
+      updateBtn();
+    });
+    updateBtn();
+
+    nextBtn.addEventListener("click", function(){
+      if(ta.value.trim().length === 0) return;
+      state.goals[i] = ta.value;
+      if(i === 9){
+        go("review");
+      } else {
+        state.goalIndex = i + 1;
+        save();
+        render();
+      }
+    });
+
+    s.appendChild(ta);
+    s.appendChild(el("div", {class:"spacer"}));
+    s.appendChild(nextBtn);
+    setTimeout(function(){ ta.focus(); }, 50);
+    return s;
+  }
+
+  function goalListRows(opts){
+    opts = opts || {};
+    var wrap = el("div", {class:"goal-list"});
+    state.goals.forEach(function(g, idx){
+      var selected = opts.selectable && state.selectedIndex === idx;
+      var row = el("div", {
+        class: "goal-row " + (opts.selectable ? "selectable" : "static") + (selected ? " selected" : "")
+      }, [
+        el("div", {class:"num", text: (idx+1)}),
+        el("div", {class:"txt", text: g})
+      ]);
+      if(opts.selectable){
+        row.addEventListener("click", function(){
+          state.selectedIndex = idx;
+          save();
+          render();
+        });
+      }
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
+  function screenReview(){
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar({ onBack: function(){ state.goalIndex = 9; go("goal-entry"); } }));
+    s.appendChild(el("h2", {text:"Your 10 goals"}));
+    s.appendChild(el("p", {class:"lead", text:"Here's everything you want to achieve in the next 12 months."}));
+    s.appendChild(goalListRows({selectable:false}));
+    s.appendChild(el("div", {class:"spacer"}));
+    s.appendChild(el("button", {class:"btn btn-primary", text:"Choose the one that matters most", onclick: function(){
+      go("select");
+    }}));
+    return s;
+  }
+
+  function screenSelect(){
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar({ onBack: function(){ go("review"); } }));
+    s.appendChild(el("h2", {text:"Pick ONE"}));
+    s.appendChild(el("p", {class:"lead", text:"If you could only achieve one of these in the next 24 hours, which would have the single greatest positive impact on your life? Tap it."}));
+    s.appendChild(goalListRows({selectable:true}));
+    s.appendChild(el("div", {class:"spacer"}));
+    var confirmBtn = el("button", {
+      class:"btn btn-good",
+      text:"Confirm & start the 7 steps",
+      disabled: state.selectedIndex === null,
+      onclick: function(){
+        if(state.selectedIndex === null) return;
+        state.stepIndex = 0;
+        go("steps");
+      }
+    });
+    s.appendChild(confirmBtn);
+    return s;
+  }
+
+  function screenSteps(){
+    var i = state.stepIndex;
+    var def = STEP_DEFS[i];
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar({
+      pill: "Step " + (i+1) + " of 7",
+      onBack: function(){
+        if(i === 0){ go("select"); }
+        else { state.stepIndex = i - 1; save(); render(); }
+      }
+    }));
+    s.appendChild(progressBar(i/7));
+    s.appendChild(el("div", {class:"goal-reminder", html: "🎯 <b>" + escapeHtml(state.goals[state.selectedIndex]) + "</b>"}));
+    s.appendChild(el("div", {class:"step-chip", text: "STEP " + (i+1) + " OF 7"}));
+    s.appendChild(el("h2", {text: def.title}));
+    s.appendChild(el("p", {class:"lead", text: def.body}));
+
+    var ta = el("textarea", {placeholder: def.placeholder});
+    ta.value = state.stepAnswers[i] || "";
+    var nextBtn = el("button", {class:"btn btn-primary", text: i === 6 ? "See my summary" : "Next step"});
+    function updateBtn(){ nextBtn.disabled = ta.value.trim().length === 0; }
+    ta.addEventListener("input", function(){
+      state.stepAnswers[i] = ta.value;
+      save();
+      updateBtn();
+    });
+    updateBtn();
+
+    nextBtn.addEventListener("click", function(){
+      if(ta.value.trim().length === 0) return;
+      state.stepAnswers[i] = ta.value;
+      if(i === 6){
+        go("summary");
+      } else {
+        state.stepIndex = i + 1;
+        save();
+        render();
+      }
+    });
+
+    s.appendChild(ta);
+    s.appendChild(el("div", {class:"spacer"}));
+    s.appendChild(nextBtn);
+    setTimeout(function(){ ta.focus(); }, 50);
+    return s;
+  }
+
+  function escapeHtml(str){
+    var d = document.createElement("div");
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function screenSummary(){
+    var s = el("div", {class:"screen"});
+    s.appendChild(topBar({ onBack: function(){ state.stepIndex = 6; go("steps"); } }));
+    s.appendChild(el("img", {class:"hero-img", style:"max-width:180px;", src:"assets/hero.webp", alt:"Ten paths leading to one highlighted goal"}));
+    s.appendChild(el("h2", {text:"Your plan"}));
+    s.appendChild(el("p", {class:"lead", text:"Screenshot this, or come back any time — it's saved on this device."}));
+
+    s.appendChild(el("div", {class:"summary-goal"}, [
+      el("div", {class:"label", text:"The goal with the biggest impact"}),
+      el("div", {class:"txt", text: state.goals[state.selectedIndex]})
+    ]));
+
+    STEP_DEFS.forEach(function(def, idx){
+      s.appendChild(el("div", {class:"summary-block"}, [
+        el("div", {class:"label", text: def.title}),
+        el("div", {class:"ans", text: state.stepAnswers[idx]})
+      ]));
+    });
+
+    s.appendChild(el("button", {class:"btn btn-primary", text:"Done for now", onclick: function(){
+      go("welcome");
+    }}));
+    s.appendChild(el("button", {class:"btn btn-ghost", text:"Start a brand new round", onclick: function(){
+      if(confirm("This clears your 10 goals and plan to start fresh. Continue?")){
+        localStorage.removeItem(STORAGE_KEY);
+        state = loadState();
+        render();
+      }
+    }}));
+    return s;
+  }
+
+  function render(){
+    var app = document.getElementById("app");
+    app.innerHTML = "";
+    var screen;
+    switch(state.screen){
+      case "goal-entry": screen = screenGoalEntry(); break;
+      case "review": screen = screenReview(); break;
+      case "select": screen = screenSelect(); break;
+      case "steps": screen = screenSteps(); break;
+      case "summary": screen = screenSummary(); break;
+      default: screen = screenWelcome();
+    }
+    app.appendChild(screen);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
