@@ -25,7 +25,7 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "Rewrite the user's goal in natural first-person present tense, as if it is already true (e.g. \"Run a marathon\" -> \"I run a marathon\", \"earn 10 million\" -> \"I earn $10 million\"). Keep it short and natural, don't add facts that weren't there. Reply with ONLY the rewritten sentence — no quotes, no preamble."
+            content: "Rewrite the user's goal as a first-person statement of the ACHIEVED STATE, as if it's already true today — not a literal present-tense of the action verb. Use the verb a person would naturally use once they already have it (e.g. \"buy a Ferrari\" -> \"I own a Ferrari\", not \"I buy a Ferrari\"; \"run a marathon\" -> \"I have run a marathon\"; \"buy my dream home\" -> \"I own my dream home\"). For a money or number goal, make it specific and granular the way someone stating an already-achieved financial goal naturally would, adding the conventional unit/timeframe if the goal implies one (e.g. \"earn 10 million\" -> \"I earn $10 million a year\"; \"lose weight\" -> \"I am at my ideal weight\"). Keep it short and natural, one sentence, don't invent unrelated specifics. Reply with ONLY the rewritten sentence — no quotes, no preamble."
           },
           { role: "user", content: raw }
         ]
