@@ -350,18 +350,59 @@
     }
   ];
 
-  var PRESENT_TENSE_EXAMPLES = [
-    "I earn $150,000 a year",
-    "I weigh 75kg and feel strong",
-    "I run a 10km race in under 50 minutes",
-    "I lead a team of 10 people",
-    "I speak confidently in front of clients",
-    "I have $20,000 in savings",
-    "I read 20 books this year",
-    "I spend 2 hours of quality time with family every day",
-    "I run a profitable side business",
-    "I live in a home I love"
-  ];
+  function lowerFirst(s){
+    s = (s || "").trim();
+    if(!s) return s;
+    var m = s.match(/^(\S+)/);
+    if(m && m[1].length > 1 && m[1] === m[1].toUpperCase() && /[A-Z]/.test(m[1])){
+      return s; // leave likely acronyms / all-caps words alone
+    }
+    return s.charAt(0).toLowerCase() + s.slice(1);
+  }
+
+  function capitalizeFirst(s){
+    s = s || "";
+    if(!s) return s;
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  // Turns a goal typed however it came to mind into present-tense phrasing
+  // ("Run a marathon" / "I will run a marathon" -> "I run a marathon") for display.
+  function toPresentTense(raw){
+    var text = (raw || "").trim();
+    if(!text) return text;
+
+    var stripPatterns = [
+      /^i\s*'?m\s+going\s+to\s+/i,
+      /^i\s+am\s+going\s+to\s+/i,
+      /^i\s*'?ll\s+/i,
+      /^i\s+will\s+/i,
+      /^i\s+want\s+to\s+/i,
+      /^i\s+plan\s+to\s+/i,
+      /^i\s+hope\s+to\s+/i,
+      /^i\s+need\s+to\s+/i,
+      /^i\s+would\s+like\s+to\s+/i,
+      /^i\s+wanna\s+/i,
+      /^my\s+goal\s+is\s+to\s+/i,
+      /^goal\s*:\s*/i,
+      /^going\s+to\s+/i,
+      /^will\s+/i,
+      /^to\s+/i
+    ];
+
+    for(var i = 0; i < stripPatterns.length; i++){
+      if(stripPatterns[i].test(text)){
+        return "I " + lowerFirst(text.replace(stripPatterns[i], ""));
+      }
+    }
+
+    if(/^i\s/i.test(text) || /^i'/i.test(text)){
+      text = text.replace(/^i'm\b/i, "I am").replace(/^i've\b/i, "I have");
+      return capitalizeFirst(text);
+    }
+
+    return "I " + lowerFirst(text);
+  }
 
   function loadState(){
     try{
@@ -466,16 +507,10 @@
     }));
     s.appendChild(progressBar((i) / 10));
     s.appendChild(el("h2", {text: "What's goal #" + (i+1) + "?"}));
-    s.appendChild(el("p", {class:"lead", text:"Write it in the present tense, as if it's already true."}));
-
-    var example = PRESENT_TENSE_EXAMPLES[i % PRESENT_TENSE_EXAMPLES.length];
-    s.appendChild(el("div", {class:"hint-box"}, [
-      el("span", {html:"<b>Tip:</b> use “I am…” or “I have…”, not “I will…”"}),
-      el("div", {class:"hint-example", text: "e.g. “" + example + "”"})
-    ]));
+    s.appendChild(el("p", {class:"lead", text:"Something you want to achieve in the next 12 months. Write it however it comes to mind."}));
 
     var ta = el("textarea", {
-      placeholder: "I…",
+      placeholder: "e.g. Run a marathon, earn $150,000, learn Spanish…",
       autofocus: "true"
     });
     ta.value = state.goals[i] || "";
@@ -517,7 +552,7 @@
         class: "goal-row " + (opts.selectable ? "selectable" : "static") + (selected ? " selected" : "")
       }, [
         el("div", {class:"num", text: (idx+1)}),
-        el("div", {class:"txt", text: g})
+        el("div", {class:"txt", text: toPresentTense(g)})
       ]);
       if(opts.selectable){
         row.addEventListener("click", function(){
@@ -535,7 +570,7 @@
     var s = el("div", {class:"screen"});
     s.appendChild(topBar({ onBack: function(){ state.goalIndex = 9; go("goal-entry"); } }));
     s.appendChild(el("h2", {text:"Your 10 goals"}));
-    s.appendChild(el("p", {class:"lead", text:"Here's everything you want to achieve in the next 12 months."}));
+    s.appendChild(el("p", {class:"lead", text:"Here's everything you want to achieve in the next 12 months — in the present tense, as if it's already true."}));
     s.appendChild(goalListRows({selectable:false}));
     s.appendChild(el("div", {class:"spacer"}));
     s.appendChild(el("button", {class:"btn btn-primary", text:"Choose the one that matters most", onclick: function(){
@@ -577,7 +612,7 @@
       }
     }));
     s.appendChild(progressBar(i/7));
-    s.appendChild(el("div", {class:"goal-reminder", html: "🎯 <b>" + escapeHtml(state.goals[state.selectedIndex]) + "</b>"}));
+    s.appendChild(el("div", {class:"goal-reminder", html: "🎯 <b>" + escapeHtml(toPresentTense(state.goals[state.selectedIndex])) + "</b>"}));
     s.appendChild(el("div", {class:"step-chip", text: "STEP " + (i+1) + " OF 7"}));
     s.appendChild(el("h2", {text: def.title}));
     s.appendChild(el("p", {class:"lead", text: def.body}));
@@ -627,7 +662,7 @@
 
     s.appendChild(el("div", {class:"summary-goal"}, [
       el("div", {class:"label", text:"The goal with the biggest impact"}),
-      el("div", {class:"txt", text: state.goals[state.selectedIndex]})
+      el("div", {class:"txt", text: toPresentTense(state.goals[state.selectedIndex])})
     ]));
 
     STEP_DEFS.forEach(function(def, idx){
